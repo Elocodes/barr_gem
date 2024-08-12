@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         const termsText = request.text;
 
         // Send the text to the Flask server
-        fetch('http://localhost:3000/api/summarize', {
+        fetch('https://barr-gem-server.vercel.app/api/summarize', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
