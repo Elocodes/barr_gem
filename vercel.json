@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "flaskserver.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "flaskserver.py"
+      }
+    ],
+    "ignore": ["extension/*"]
+  }
+  
