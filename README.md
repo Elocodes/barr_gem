@@ -15,7 +15,7 @@ Barrister Gemini is a Chrome extension designed to help users understand complex
 
 ## Installation Guide
 
-**Clone the Repository**: git clone https://github.com/Elocodes/barr-gem.git
+**Clone the Repository**: git clone https://github.com/Elocodes/barr_gem.git
 
 **Load the Extension files in Chrome**:
 Open Chrome and navigate to chrome://extensions/.
