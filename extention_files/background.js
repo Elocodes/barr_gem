@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener(() => {
     console.log('Barrister Gemini installed');
-  });
+});
 
 // Listener for messages from content script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -15,13 +15,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             },
             body: JSON.stringify({ text: termsText })
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Summary:', data.summary);
-
-            // send the summary back to the content script to display
-            chrome.tabs.sendMessage(sender.tab.id, { action: 'displaySummary', summary: data.summary });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Server responded with status: ${response.status}`);
+            }
+            return response.json();
         })
-        .catch(error => console.error('Error:', error));
+        .then(data => {
+            if (data && data.summary) {
+                console.log('Summary:', data.summary);
+
+                // send the summary back to the content script to display
+                chrome.tabs.sendMessage(sender.tab.id, { action: 'displaySummary', summary: data.summary });
+            } else {
+                console.error('Unexpected response format:', data);
+                chrome.tabs.sendMessage(sender.tab.id, { action: 'displaySummary', summary: 'Error: Unexpected response format.' });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching summary:', error);
+            // Optionally, send a message back to the content script to handle the error gracefully
+            chrome.tabs.sendMessage(sender.tab.id, { action: 'displaySummary', summary: 'Error: Unable to fetch summary. Please try again later.' });
+        });
     }
 });
