@@ -24,52 +24,90 @@ function insertGeminiIcon() {
     }
 }
 
-// Function to detect keywords in the page content
-function detectTermsAndConditions() {
-    try {
-        const termsKeywords = [
-            'terms of service',
-            'terms and conditions',
-            'privacy policy',
-            'user agreement',
-            'acceptable use policy'
-        ];
-
-        // Check headers first
-        const headerTags = document.querySelectorAll('h1, h2, h3');
-        let headerDetected = false;
-
-        headerTags.forEach(header => {
-            const headerText = header.innerText.toLowerCase();
-            if (termsKeywords.some(keyword => headerText.includes(keyword))) {
-                headerDetected = true;
-            }
-        });
-
-        return headerDetected;
-    } catch (error) {
-        console.error('Error detecting terms and conditions:', error);
-        return false;
-    }
+//detection logic
+// Function to check if the current page is a search engine result page
+function isSearchEngineResultsPage() {
+    const url = new URL(window.location.href);
+    const searchParams = ['q', 'search', 'query'];
+    return searchParams.some(param => url.searchParams.has(param));
 }
 
-// Function to check if the page is likely to have terms and conditions based on URL
-function isTermsPage() {
-    try {
-        const termsPatterns = [/\/terms/, /\/privacy/, /\/legal/, /\/agreement/];
-        const url = window.location.href;
+// Function to check if the current page is likely a terms page based on URL
+function isTermsPageURL() {
+    const termsPatterns = [/\/terms/, /\/privacy/, /\/legal/, /\/site-policy/, /\/agreement/];
+    const url = window.location.href;
+    return termsPatterns.some(pattern => pattern.test(url));
+}
 
-        // Check if the URL matches common terms patterns
-        return termsPatterns.some(pattern => pattern.test(url));
+// Function to check if the current page contains terms and conditions in headers
+function containsTermsKeywordsInHeaders() {
+    const termsKeywords = [
+        'terms of service',
+        'terms and conditions',
+        'privacy policy',
+        'user agreement',
+        'acceptable use policy',
+        'privacy statement',
+        'terms and policies'
+    ];
+    const headerTags = document.querySelectorAll('h1, h2, h3');
+    return Array.from(headerTags).some(header => {
+        const headerText = header.innerText.toLowerCase();
+        return termsKeywords.some(keyword => headerText.includes(keyword));
+    });
+}
+
+// New function to check if the page has educational or informational content
+function containsInformationalContent() {
+    const informationalKeywords = [
+        'By using our products, you agree to our Terms', 'by accessing or using our services, you are agreeing to these terms'
+    ];
+    const bodyText = document.body.innerText.toLowerCase();
+
+    return informationalKeywords.some(keyword => bodyText.includes(keyword));
+}
+
+// New function to check for structured legal document content
+function containsStructuredLegalContent() {
+    const structuredPatterns = [/section \d+/i, /article \d+/i, /clause \d+/i, /subsection \d+/i, /part \d+/i];
+    const bodyText = document.body.innerText.toLowerCase();
+    return structuredPatterns.some(pattern => pattern.test(bodyText));
+}
+
+// Main function to decide if the Gemini icon should be shown
+function shouldShowGeminiIcon() {
+    try {
+        // If it's a search engine results page, do not show the icon
+        if (isSearchEngineResultsPage()) {
+            return false;
+        }
+
+        // If headers contain terms and conditions keywords but not informational content, do not show the icon
+        //if (containsTermsKeywordsInHeaders() && containsInformationalContent()) {
+            //return true;
+        //}
+
+        // If the URL suggests it might be a terms page, and contains structured content, show the icon
+        if (isTermsPageURL() && containsTermsKeywordsInHeaders()) {
+            return true;
+        }
+
+        // If headers contain terms and conditions keywords but not informational content, do not show the icon
+        //if (containsTermsKeywordsInHeaders() && !containsInformationalContent()) {
+            //return true;
+        //}
+
+        // Otherwise, do not show the icon
+        return false;
     } catch (error) {
-        console.error('Error checking if page is a terms page:', error);
+        console.error('Error determining if the Gemini icon should be shown:', error);
         return false;
     }
 }
 
 // Run detection when the content script is loaded
 try {
-    if (isTermsPage() || detectTermsAndConditions()) {
+    if (shouldShowGeminiIcon()){
         console.log("Terms and Conditions detected!!!");
         insertGeminiIcon();
     }
@@ -77,9 +115,50 @@ try {
     console.error('Error running detection logic:', error);
 }
 
+// Function to create and insert the loading spinner
+function insertLoadingSpinner() {
+    const spinner = document.createElement('div');
+    spinner.id = 'loadingSpinner';
+    
+    // Style and insert the spinner into the page
+    spinner.style.position = 'fixed';
+    spinner.style.bottom = '20px';
+    spinner.style.right = '90px'; // Adjusted position next to the Gemini icon
+    spinner.style.width = '40px';
+    spinner.style.height = '40px';
+    spinner.style.border = '4px solid rgba(255, 255, 255, 0.3)';
+    spinner.style.borderTopColor = '#fff';
+    spinner.style.borderRadius = '50%';
+    spinner.style.animation = 'spin 1s linear infinite';
+    spinner.style.zIndex = '1001';
+    spinner.style.display = 'none'; // Initially hidden
+
+    document.body.appendChild(spinner);
+}
+
+// Function to show the loading spinner
+function showLoadingSpinner() {
+    const spinner = document.getElementById('loadingSpinner');
+    if (spinner) {
+        spinner.style.display = 'block';
+    }
+}
+
+// Function to hide the loading spinner
+function hideLoadingSpinner() {
+    const spinner = document.getElementById('loadingSpinner');
+    if (spinner) {
+        spinner.style.display = 'none';
+    }
+}
+
+// Insert the spinner when the content script loads
+insertLoadingSpinner();
+
 // Function to handle the click event on the Gemini icon
 function handleIconClick() {
     try {
+        showLoadingSpinner(); // Show the loading spinner
         const termsText = document.body.innerText;
 
         // Send the text to the background script
@@ -157,11 +236,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === 'displaySummary') {
             const summary = request.summary;
 
+            // Hide the loading spinner
+            hideLoadingSpinner();
+
             // Display the summary in the summary container
             const summaryContainer = document.getElementById('summaryContainer');
             const summaryResult = document.getElementById('summaryResult');
 
-            summaryResult.textContent = summary;
+            //summaryResult.textContent = summary;
+            summaryResult.innerHTML = summary; // Use innerHTML for HTML content
             summaryContainer.style.display = 'block';
         }
     } catch (error) {

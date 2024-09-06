@@ -28,7 +28,8 @@ def summarize():
     try:
         # Generate summary using Gemini API
         response = model.generate_content(
-            f"You are an intelligent lawyer. Read this terms and conditions thoroughly, and in 6 bullet points, and bolded words where necessary, tell me, as a busy person, the most important things I should know before signing the agreement. Especially things like data privacy, subscriptions, billings, etc. Use white space to separate the bullet points for a cleaner look: {text}"
+            f"You are an intelligent lawyer. Read this terms and conditions thoroughly, and in 6 bullet points, bolded words where necessary, summarize the most important things a busy person should know before signing the agreement. Focus on key aspects like data privacy, subscriptions, billings, etc. Use white space to separate the bullet points for a cleaner look: {text}"
+            #f"You are an intelligent lawyer. Read this terms and conditions thoroughly, and in 6 bullet points, and bolded words where necessary, tell me, as a busy person, the most important things I should know before signing the agreement. Especially things like data privacy, subscriptions, billings, etc. Use white space to separate the bullet points for a cleaner look: {text}"
         )
 
         # Extract summary from response
