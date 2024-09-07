@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Barrister Gemini",
     "version": "1.0",
-    "description": "Summarizes key points of User terms and conditions.",
+    "description": "When was the last time you read 'Terms and Conditions' on the web before clicking 'I Agree'? Get instant, concise summaries – so you're informed before you agree.",
     "permissions": [
       "activeTab",
       "storage",
