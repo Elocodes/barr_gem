@@ -48,7 +48,9 @@ function containsTermsKeywordsInHeaders() {
         'user agreement',
         'acceptable use policy',
         'privacy statement',
-        'terms and policies'
+        'terms and policies',
+        'privacy notice',
+        'conditions of use'
     ];
     const headerTags = document.querySelectorAll('h1, h2, h3');
     return Array.from(headerTags).some(header => {
@@ -60,7 +62,10 @@ function containsTermsKeywordsInHeaders() {
 // New function to check if the page has educational or informational content
 function containsInformationalContent() {
     const informationalKeywords = [
-        'By using our products, you agree to our Terms', 'by accessing or using our services, you are agreeing to these terms'
+        'By using our products, you agree to our Terms',
+        'by accessing or using our services, you are agreeing to these terms',
+        'you are consenting to the practices described in this',
+        'you agree, on behalf of yourself and all members of your household and others who use any Service under your account, to the following conditions.'
     ];
     const bodyText = document.body.innerText.toLowerCase();
 
@@ -88,14 +93,14 @@ function shouldShowGeminiIcon() {
         //}
 
         // If the URL suggests it might be a terms page, and contains structured content, show the icon
-        if (isTermsPageURL() && containsTermsKeywordsInHeaders()) {
+        if (isTermsPageURL()) {
             return true;
         }
 
         // If headers contain terms and conditions keywords but not informational content, do not show the icon
-        //if (containsTermsKeywordsInHeaders() && !containsInformationalContent()) {
-            //return true;
-        //}
+        if (containsTermsKeywordsInHeaders() && containsInformationalContent()) {
+            return true;
+        }
 
         // Otherwise, do not show the icon
         return false;
