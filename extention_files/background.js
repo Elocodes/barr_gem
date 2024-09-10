@@ -3,8 +3,22 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 function markdownToHtml(markdown) {
-    return markdown.replace(/\*\*(.*)\*\*/g, '<b>$1</b>');
-  }
+    // Convert headings (## and # to <h1> and <h2>)
+    markdown = markdown.replace(/^## (.*$)/gim, '<h2>$1</h2>'); // Subheading (##)
+    markdown = markdown.replace(/^# (.*$)/gim, '<h1>$1</h1>');  // Heading (#)
+
+    // Convert bold text ( **text** to <b>text</b> )
+    markdown = markdown.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+
+    // Convert bullet points (* or - followed by a space to <li>)
+    markdown = markdown.replace(/^\s*[-*]\s+(.*$)/gim, '<li>$1</li>');
+
+    // Wrap lists in <ul> tags
+    markdown = markdown.replace(/(<li>.*<\/li>)/gim, '<ul>$1</ul>');
+
+    // Return the converted HTML
+    return markdown;
+}
 
 // Listener for messages from content script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
