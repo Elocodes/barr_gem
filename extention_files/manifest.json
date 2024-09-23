@@ -2,12 +2,9 @@
     "manifest_version": 3,
     "name": "Barrister Gemini",
     "version": "1.0",
-    "description": "When last did you read 'Terms and Conditions' on the web before clicking 'I Agree'? Get instant, concise summaries – know, before you agree.",
+    "description": "Say no to mindless agreements. Get instant, concise summaries of “Terms and Conditions” on the web. Know, before you agree!",
     "permissions": [
-      "activeTab",
-      "storage",
-      "tabs",
-      "scripting"
+      "activeTab"
     ],
     "background": {
       "service_worker": "background.js"
