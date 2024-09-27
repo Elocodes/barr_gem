@@ -3,9 +3,6 @@
     "name": "Barrister Gemini",
     "version": "1.0",
     "description": "Say no to mindless agreements. Get instant, concise summaries of “Terms and Conditions” on the web. Know, before you agree!",
-    "permissions": [
-      "activeTab"
-    ],
     "background": {
       "service_worker": "background.js"
     },
