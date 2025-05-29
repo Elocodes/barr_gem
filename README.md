@@ -1,7 +1,7 @@
 # Barrister Gemini Chrome Extension
 
 ## Overview
-Barrister Gemini is a Chrome extension designed to help users understand complex legal terms and conditions with ease. It automatically detects pages with terms and conditions and provides a summary, highlighting key points. This extension is particularly useful for those who wish to be informed before agreeing to terms and conditions on websites.
+Barrister Gemini is a Chrome extension designed to help users understand complex legal terms and conditions with ease. It automatically detects pages with terms and conditions and provides a summary, highlighting key points. This extension is particularly useful for those who wish to be informed before agreeing to terms and conditions on websites. Check it out on [Barrister Gemini - Chrome Web Store](https://chromewebstore.google.com/detail/barrister-gemini/elhjocjbccimmjfondigfgdbfbjkddbf)
 
 ## Features
 
